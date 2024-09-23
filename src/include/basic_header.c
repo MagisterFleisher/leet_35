@@ -7,11 +7,17 @@ void temp(void) {
   return;
 }
 
+typedef struct target_return {
+  bool found;
+  uint16_t found_index;
+  uint16_t nums_index_start;
+  uint16_t nums_index_end;
+} target_return;
 
 /* Binary search */
-
-int searchInsert(int* nums, int numsSize, int target) {
+target_return* findTarget(int* nums, target_return* current_search_space, const int target) {
   enum case_enum {
+    SIZE_1 = 3,
     LARGEST = 2,
     SMALLEST = 1,
     OTHER = 0
@@ -20,15 +26,19 @@ int searchInsert(int* nums, int numsSize, int target) {
     Find length 
       numsSize
   */
-  const uint16_t num_size = (uint16_t) numsSize;
-
+  const uint16_t current_lowest_index = current_search_space->nums_index_start;
+  const uint16_t current_highest_index = current_search_space->nums_index_end;
+  (void) printf("current lowest %d \t current highest %d\n", current_lowest_index, current_highest_index);
+  (void) printf("current width : %d \n", (current_search_space->nums_index_end - current_search_space->nums_index_start));
   /* 
     Degenerate case:
     numsSize = 0
     answer either 0 or error
   */
-  if(0 == num_size) {
-    return 0;
+  if(0 == ((1 + current_search_space->nums_index_end) - current_search_space->nums_index_start)) {
+    current_search_space->found_index = 0;
+    current_search_space->found = true;
+    return current_search_space;
   }
 
   /* 
@@ -45,23 +55,55 @@ int searchInsert(int* nums, int numsSize, int target) {
     
     NB: End cases contains sign based results, but sign based may have advantages given simplicity of determining sign.
   */
-  const bool target_smallerOrEqual_than_all = (target <= nums[0]);
-  const bool target_largerOrEqual_than_all = (target > nums[(num_size -1)]);
-  const uint16_t case_values = ((uint16_t) target_smallerOrEqual_than_all) + (2* ((uint16_t) target_largerOrEqual_than_all)); 
+  int current_lowest_value = nums[current_lowest_index];
+  int current_highest_value = nums[current_highest_index];
+  const bool target_smallerOrEqual_than_all = (target <= current_lowest_value);
+  const bool target_largerOrEqual_than_all = (target > current_highest_value);
+
+  (void) printf("target_smallerOrEqual_than_all : %d\t target_largerOrEqual_than_all: %d\n", target_smallerOrEqual_than_all, target_largerOrEqual_than_all);
+  (void) printf("target : %d \tcurrent_lowest_value : %d\t current_highest_value: %d\n", target, current_lowest_value, current_highest_value);
+
+  const uint16_t index_width = 1 + ((current_search_space->nums_index_end + 1) - current_search_space->nums_index_start); 
+  const uint16_t case_values = ((uint16_t) target_smallerOrEqual_than_all) + (2 * ((uint16_t) target_largerOrEqual_than_all) + (3* (index_width == 1)));
+
+  (void) printf("case value: %d\n", case_values); 
   /* 
     Non basic cases:
     1) Binary search
     2) Parallel binary search
   */
   switch(case_values) {
+    case SIZE_1 : {
+      current_search_space->found = true;
+      if(target <= current_lowest_value) {
+      current_search_space->found_index = current_lowest_index;  
+      } else {
+        current_search_space->found_index = current_highest_index + 1;
+      }
+      break;
+    };
     case SMALLEST : {
       (void) printf("%s] %s) %d- CASE: smallest.\n", __FILE__, __func__, __LINE__);
-      return 0;
+      current_search_space->found = true;
+      if(current_lowest_index > 0) {
+        if(current_lowest_value != target) {
+        current_search_space->found_index = current_lowest_index -1; 
+        } else {
+          current_search_space->found_index = current_lowest_index;
+        }
+        (void) printf("current_lowest - 1 %d\n", (current_lowest_index - 1));
+        (void) printf("current_lowest_value %d \ttarget %d\n", current_lowest_value, target);
+      } else {
+        (void) printf("current_lowest %d\n", current_lowest_index);
+        current_search_space->found_index = current_lowest_index; 
+      }
       break;
     };
     case LARGEST : {
       (void) printf("%s] %s) %d- CASE: largest.\n", __FILE__, __func__, __LINE__);
-      return num_size;
+      current_search_space->found = true;
+      current_search_space->found_index = current_highest_index + 1; 
+      (void) printf("current_highest %d\tcurrent_search_space->found_index: %d\n", current_highest_index, current_search_space->found_index);
       break;
     };
     case OTHER : {
@@ -84,6 +126,17 @@ int searchInsert(int* nums, int numsSize, int target) {
 
         RECURSE TO SPLIT
       */
+      (void) printf("index_width : %d\n", index_width);
+      const uint16_t index_middle = index_width / 2;
+      (void) printf("index_middle : %d\n", index_middle);
+      if(target <= nums[index_middle]) { 
+        (void) printf("Target less than or equal to middle value: %d <= %d\n", target, nums[index_middle]);
+        current_search_space->nums_index_start = index_middle;
+      } else {
+        (void) printf("Target greater than to middle value: %d > %d\n", target, nums[index_middle]);
+        current_search_space->nums_index_end = (index_middle - 1);
+      }
+
       break;
     };
     default: {
@@ -93,6 +146,21 @@ int searchInsert(int* nums, int numsSize, int target) {
       break;
     }
   }
+  (void) printf("returning value as target %d", current_search_space->found_index);
+  return current_search_space;
+}
 
-  return target;
+int searchInsert(int* nums, int numsSize, int target) {
+  int* current_nums = nums;
+  int current_size = numsSize;
+
+  target_return is_found = {};
+  is_found.nums_index_start = 0;
+  is_found.nums_index_end = (current_size - 1);
+
+  while(false == is_found.found) {
+    is_found = *findTarget(nums, &is_found, target);
+  }
+
+  return is_found.found_index;
 }
