@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/aaron/Programming/c/leet_code/leet_35/build",
+  "command": "/usr/bin/gcc -g -std=gnu2x -o CMakeFiles/leet_35.dir/src/main.c.o -c /home/aaron/Programming/c/leet_code/leet_35/src/main.c",
+  "file": "/home/aaron/Programming/c/leet_code/leet_35/src/main.c",
+  "output": "CMakeFiles/leet_35.dir/src/main.c.o"
+}
+]
