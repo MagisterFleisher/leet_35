@@ -5,7 +5,7 @@
 
 void temp(void);
 
-int searchInsert(int* nums, int numsSize, int target);
+int binaryLocate(int* nums, int numsSize, int target);
 
 
 #endif

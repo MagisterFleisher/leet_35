@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "include/basic_header.h"
+#include "include/binary_locate.h"
 
 int main(int argument_count, char** argument_vector) {
   int error = 0;
