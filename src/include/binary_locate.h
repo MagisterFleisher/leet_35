@@ -1,11 +1,10 @@
-#ifndef BAISC_HEADER_H_
-#define BAISC_HEADER_H_
+#ifndef BINARY_LOCATE_H_
+#define BINARY_LOCATE_H_
 
-#include "basic_header.c"
+#include "binary_locate.c"
 
 void temp(void);
 
 int binaryLocate(int* nums, int numsSize, int target);
-
 
 #endif
