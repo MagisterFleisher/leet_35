@@ -24,11 +24,10 @@ int main(int argument_count, char** argument_vector) {
   int numsSize[11] = { 1, 2, 2, 3, 3, 4, 4, 6, 6, 7, 7 };
 
   int target[4] = { 0, 1, 5, 11 };
+  int target0 = 11;
 
   for(uint_fast8_t index0 = 0; index0 < 11; index0++) {
-    for(uint_fast8_t index1 = 0; index1 < 4; index1++) {
-      printf("array%d\ttarget: %d\tindex: %d\n", index0, index1, binaryLocate(nums[index0], numsSize[index0], target[index1]));
-    }
-  }
+      printf("array%d\tindex: %d\n", index0, binaryLocate(nums[index0], numsSize[index0], target0)); }
   return error;
+
 }

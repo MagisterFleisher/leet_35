@@ -22,18 +22,11 @@ int binaryLocate(int* nums, int numsSize, int target) {
 
   (void) assert(0 <= numsSize);
   bool continue_searching = true;
-  uint_fast16_t start_index = 0;
-  uint_fast16_t end_index = numsSize - 1;
-  uint_fast8_t case_search_size = (end_index - start_index);
-  uint_fast16_t middle_index = numsSize / 2;
-  
-  uint_fast8_t find_area = (target == nums[middle_index]) + (2*(target > nums[middle_index])) + (3*(target < nums[middle_index]));
-
-/*   
- 
-  (void) printf("%d- middle_index: %ju\tstart_index: %ju\tend_index: %ju\tcase_search_size: %ju\tfind_area: %ju\n", 
-    __LINE__, middle_index, start_index,end_index, case_search_size, find_area);
-*/
+  int_fast16_t start_index = 0;
+  int_fast16_t end_index = numsSize - 1;
+  int_fast8_t case_search_size = (end_index - start_index);
+  int_fast16_t middle_index = numsSize / 2;  
+  int_fast8_t find_area = (target == nums[middle_index]) + (2*(target > nums[middle_index])) + (3*(target < nums[middle_index]));
 
   while(continue_searching) {
     if(case_search_size == 0) {
@@ -41,13 +34,16 @@ int binaryLocate(int* nums, int numsSize, int target) {
           1 VALUE IN ARRAY 
         */
         if(target == nums[middle_index]) {
+          (void) printf("\n%d-\ttarget %d == nums[middle_index] %d\tmiddle_index: %d\n", __LINE__, target, nums[middle_index], middle_index);
           return middle_index;
         }
         if(target < nums[middle_index]) {
-            return middle_index;
+          (void) printf("\n%d\ttarget %d < nums[middle_index] %d\tmiddle_index: %d\n", __LINE__, target, nums[middle_index], middle_index);
+          return middle_index;
         }
         if(target > nums[middle_index]) {
-            return (middle_index + 1);
+          (void) printf("\n%d\ttarget %d > nums[middle_index] %d\tmiddle_index: %d\n", __LINE__, target, nums[middle_index], middle_index);
+          return (middle_index + 1);
         }
     } else {
         /*
@@ -61,7 +57,7 @@ int binaryLocate(int* nums, int numsSize, int target) {
         */
         switch(find_area) {
           case EQUAL_TO_MIDDLE : {
-            (void) printf("%d-\tfound at middle index: %ju\tmiddle index value: %d\n", __LINE__, middle_index, nums[middle_index]);
+            (void) printf("\n%d-\ttarget: %d\tfound at middle index: %jd\tmiddle index value: %d\n", __LINE__, target, middle_index, nums[middle_index]);
             return middle_index;
             //found_index = middle_index;
             continue_searching = false;
@@ -85,34 +81,9 @@ int binaryLocate(int* nums, int numsSize, int target) {
             break;
           };
         }
-        find_area = (target == nums[middle_index]) + (2*(target > nums[middle_index])) + (3*(target < nums[middle_index]));
-        case_search_size = end_index - start_index;
-        //break;
       }
+      find_area = (target == nums[middle_index]) + (2*(target > nums[middle_index])) + (3*(target < nums[middle_index]));
+      case_search_size = end_index - start_index;
     }
-/*       case 1 : {
-    switch(case_search_size) {
-      case 0 : { 
-          //return found_index;
-        break;
-      };
-
-          2 VALUES IN ARRAY
-                if(target == nums[start_index]) {
-          return 0;
-        } else  {
-          if(target == nums[end_index]) {
-            return 1; 
-            } else {
-              return found_index;}
-        }
-        break;
-      }; 
-      default : {
-      break;
-    }
-    //continue_searching = false;
-  }
-      */
   return found_index;
 }
